@@ -146,7 +146,7 @@ public class ReadPropertiesStepTest {
                         "  def props = readProperties()\n" +
                         "}", true));
         WorkflowRun run = j.assertBuildStatus(Result.FAILURE, p.scheduleBuild2(0).get());
-        j.assertLogContains(Messages.AbstractFileOrTextStepDescriptorImpl_missingRequiredArgument("readProperties"), run);
+        j.assertLogContains(Messages.AbstractFileStepDescriptorImpl_missingRequiredArgument("readProperties"), run);
     }
 
     @Test

@@ -30,7 +30,7 @@ import org.apache.commons.configuration2.AbstractConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ConfigurationConverter;
 import org.apache.commons.lang.StringUtils;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStepExecution;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileStepExecution;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 
 import javax.annotation.Nonnull;
@@ -47,7 +47,7 @@ import java.util.Set;
  *
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */
-public class ReadPropertiesStepExecution extends AbstractFileOrTextStepExecution<Map<String, Object>> {
+public class ReadPropertiesStepExecution extends AbstractFileStepExecution<Map<String, Object>> {
     private static final long serialVersionUID = 1L;
 
     private transient ReadPropertiesStep step;

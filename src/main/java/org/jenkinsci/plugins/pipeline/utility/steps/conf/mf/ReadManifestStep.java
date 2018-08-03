@@ -25,8 +25,8 @@
 package org.jenkinsci.plugins.pipeline.utility.steps.conf.mf;
 
 import hudson.Extension;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStep;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStepDescriptorImpl;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStep;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStepDescriptorImpl;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -39,7 +39,7 @@ import java.io.Serializable;
  *
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */
-public class ReadManifestStep extends AbstractFileOrTextStep {
+public class ReadManifestStep extends AbstractReadStep {
     /**
      * Since the user could either use {@link #setFile(String)} or {@link #setText(String)}
      * this constructor takes no parameters.
@@ -54,7 +54,7 @@ public class ReadManifestStep extends AbstractFileOrTextStep {
     }
 
     @Extension
-    public static class DescriptorImpl extends AbstractFileOrTextStepDescriptorImpl {
+    public static class DescriptorImpl extends AbstractReadStepDescriptorImpl {
 
         public DescriptorImpl() {
 

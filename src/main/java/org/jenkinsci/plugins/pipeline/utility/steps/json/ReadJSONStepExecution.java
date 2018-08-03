@@ -28,8 +28,8 @@ import hudson.FilePath;
 import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
 import org.apache.commons.io.IOUtils;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStep;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStepExecution;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStep;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileStepExecution;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 
 import javax.annotation.Nonnull;
@@ -45,7 +45,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  *
  * @author Nikolas Falco
  */
-public class ReadJSONStepExecution extends AbstractFileOrTextStepExecution<JSON> {
+public class ReadJSONStepExecution extends AbstractFileStepExecution<JSON> {
     private static final long serialVersionUID = 1L;
 
     private transient ReadJSONStep step;

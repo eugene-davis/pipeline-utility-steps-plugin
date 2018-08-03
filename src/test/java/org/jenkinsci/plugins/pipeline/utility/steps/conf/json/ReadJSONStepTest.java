@@ -47,7 +47,7 @@ import hudson.model.Result;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import static org.jenkinsci.plugins.pipeline.utility.steps.Messages.AbstractFileOrTextStepDescriptorImpl_missingRequiredArgument;
+import static org.jenkinsci.plugins.pipeline.utility.steps.Messages.AbstractFileStepDescriptorImpl_missingRequiredArgument;
 
 /**
  * Tests for {@link ReadJSONStep}.
@@ -110,7 +110,7 @@ public class ReadJSONStepTest {
                         "  def json = readJSON()\n" +
                         "}", true));
         WorkflowRun run = j.assertBuildStatus(Result.FAILURE, p.scheduleBuild2(0).get());
-        j.assertLogContains(AbstractFileOrTextStepDescriptorImpl_missingRequiredArgument("readJSON"), run);
+        j.assertLogContains(AbstractFileStepDescriptorImpl_missingRequiredArgument("readJSON"), run);
     }
 
     @Test

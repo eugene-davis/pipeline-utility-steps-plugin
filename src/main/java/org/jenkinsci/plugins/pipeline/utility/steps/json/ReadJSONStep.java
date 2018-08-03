@@ -23,8 +23,8 @@
  */
 package org.jenkinsci.plugins.pipeline.utility.steps.json;
 
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStep;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStepDescriptorImpl;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStep;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStepDescriptorImpl;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -39,7 +39,7 @@ import java.io.Serializable;
  *
  * @author Nikolas Falco
  */
-public class ReadJSONStep extends AbstractFileOrTextStep {
+public class ReadJSONStep extends AbstractReadStep {
 
     @DataBoundConstructor
     public ReadJSONStep() {
@@ -51,7 +51,7 @@ public class ReadJSONStep extends AbstractFileOrTextStep {
     }
 
     @Extension
-    public static class DescriptorImpl extends AbstractFileOrTextStepDescriptorImpl {
+    public static class DescriptorImpl extends AbstractReadStepDescriptorImpl {
 
         public DescriptorImpl() {
 

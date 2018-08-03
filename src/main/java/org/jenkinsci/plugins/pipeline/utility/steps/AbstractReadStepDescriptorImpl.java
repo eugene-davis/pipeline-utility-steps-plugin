@@ -10,9 +10,9 @@ import java.util.Set;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 
-public abstract class AbstractFileOrTextStepDescriptorImpl extends StepDescriptor {
+public abstract class AbstractReadStepDescriptorImpl extends StepDescriptor {
 
-    protected AbstractFileOrTextStepDescriptorImpl() {
+    protected AbstractReadStepDescriptorImpl() {
     }
 
     @Override
@@ -21,10 +21,10 @@ public abstract class AbstractFileOrTextStepDescriptorImpl extends StepDescripto
     }
 
     @Override
-    public AbstractFileOrTextStep newInstance(Map<String, Object> arguments) throws Exception {
-        AbstractFileOrTextStep step = (AbstractFileOrTextStep) super.newInstance(arguments);
+    public AbstractReadStep newInstance(Map<String, Object> arguments) throws Exception {
+        AbstractReadStep step = (AbstractReadStep) super.newInstance(arguments);
         if (isBlank(step.getFile()) && isBlank(step.getText())) {
-            throw new IllegalArgumentException(Messages.AbstractFileOrTextStepDescriptorImpl_missingRequiredArgument(getFunctionName()));
+            throw new IllegalArgumentException(Messages.AbstractFileStepDescriptorImpl_missingRequiredArgument(getFunctionName()));
         }
         return step;
     }

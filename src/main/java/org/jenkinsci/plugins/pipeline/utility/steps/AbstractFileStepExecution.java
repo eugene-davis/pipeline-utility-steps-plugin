@@ -12,21 +12,21 @@ import javax.inject.Inject;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-public abstract class AbstractFileOrTextStepExecution<T> extends SynchronousNonBlockingStepExecution<T> {
+public abstract class AbstractFileStepExecution<T> extends SynchronousNonBlockingStepExecution<T> {
 
-    private transient AbstractFileOrTextStep fileOrTextStep;
+    private transient AbstractFileStep fileStep;
 
     protected FilePath ws;
 
-    protected AbstractFileOrTextStepExecution(@Nonnull AbstractFileOrTextStep step, @Nonnull StepContext context) {
+    protected AbstractFileStepExecution(@Nonnull AbstractFileStep step, @Nonnull StepContext context) {
         super(context);
-        this.fileOrTextStep = step;
+        this.fileStep = step;
     }
 
     @Override
     protected final T run() throws Exception {
         ws = getContext().get(FilePath.class);
-        if (ws == null && isNotBlank(fileOrTextStep.getFile())) {
+        if (ws == null && isNotBlank(fileStep.getFile())) {
             throw new MissingContextVariableException(FilePath.class);
         }
         return doRun();

@@ -40,9 +40,9 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStep;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStepDescriptorImpl;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStepExecution;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStep;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStepDescriptorImpl;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileStepExecution;
 import org.jenkinsci.plugins.pipeline.utility.steps.shaded.org.yaml.snakeyaml.Yaml;
 import org.jenkinsci.plugins.pipeline.utility.steps.shaded.org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.jenkinsci.plugins.pipeline.utility.steps.shaded.org.yaml.snakeyaml.reader.UnicodeReader;
@@ -60,7 +60,7 @@ import hudson.model.TaskListener;
  *
  * @author Philippe GRANET &lt;philippe.granet@gmail.com&gt;.
  */
-public class ReadYamlStep extends AbstractFileOrTextStep {
+public class ReadYamlStep extends AbstractReadStep {
 
 	@DataBoundConstructor
 	public ReadYamlStep() {
@@ -72,7 +72,7 @@ public class ReadYamlStep extends AbstractFileOrTextStep {
 	}
 
 	@Extension
-	public static class DescriptorImpl extends AbstractFileOrTextStepDescriptorImpl {
+	public static class DescriptorImpl extends AbstractReadStepDescriptorImpl {
 
 		public DescriptorImpl() {
 		}
@@ -89,7 +89,7 @@ public class ReadYamlStep extends AbstractFileOrTextStep {
 		}
 	}
 
-	public static class Execution extends AbstractFileOrTextStepExecution<Object> {
+	public static class Execution extends AbstractFileStepExecution<Object> {
 		private static final long serialVersionUID = 1L;
 		private transient ReadYamlStep step;
 

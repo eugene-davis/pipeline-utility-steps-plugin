@@ -26,8 +26,8 @@ package org.jenkinsci.plugins.pipeline.utility.steps.conf;
 
 import hudson.Extension;
 import hudson.model.TaskListener;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStep;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileOrTextStepDescriptorImpl;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStep;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStepDescriptorImpl;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -44,7 +44,7 @@ import java.util.Set;
  *
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */
-public class ReadPropertiesStep extends AbstractFileOrTextStep {
+public class ReadPropertiesStep extends AbstractReadStep {
     private Map defaults;
     private boolean interpolate;
 
@@ -98,7 +98,7 @@ public class ReadPropertiesStep extends AbstractFileOrTextStep {
     }
 
     @Extension
-    public static class DescriptorImpl extends AbstractFileOrTextStepDescriptorImpl {
+    public static class DescriptorImpl extends AbstractReadStepDescriptorImpl {
         public DescriptorImpl() {
 
         }
