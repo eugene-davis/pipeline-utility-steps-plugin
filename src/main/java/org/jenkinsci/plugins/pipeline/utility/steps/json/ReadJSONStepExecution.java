@@ -70,7 +70,7 @@ public class ReadJSONStepExecution extends AbstractFileStepExecution<JSON> {
                     json = JSONSerializer.toJSON(IOUtils.toString(is, "UTF-8"));
                 }
             } else if (f.isDirectory()) {
-                throw new IllegalArgumentException(Messages.JSONStepExecution_fileIsDirectory(f.getRemote()));
+                throw new IllegalArgumentException(org.jenkinsci.plugins.pipeline.utility.steps.Messages.AbstractFileStepExecution_fileIsDirectory(f.getRemote()));
             } else if (!f.exists()) {
                 throw new FileNotFoundException(Messages.JSONStepExecution_fileNotFound(f.getRemote()));
             }

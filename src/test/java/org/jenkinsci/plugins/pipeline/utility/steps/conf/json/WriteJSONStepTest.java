@@ -133,7 +133,7 @@ public class WriteJSONStepTest {
                         "  writeJSON json: json" +
                         "}", true));
         WorkflowRun run = j.assertBuildStatus(Result.FAILURE, p.scheduleBuild2(0).get());
-        j.assertLogContains(Messages.WriteJSONStepExecution_missingFile("writeJSON"), run);
+        j.assertLogContains(org.jenkinsci.plugins.pipeline.utility.steps.Messages.AbstractFileStepDescriptorImp_missingFile("writeJSON"), run);
     }
 
     @Test

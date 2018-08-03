@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
-import org.jenkinsci.plugins.workflow.steps.AbstractSynchronousNonBlockingStepExecution;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractWriteStepExecution;
 import org.jenkinsci.plugins.workflow.steps.MissingContextVariableException;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepContextParameter;
@@ -46,33 +46,23 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  *
  * @author Nikolas Falco
  */
-public class WriteJSONStepExecution extends SynchronousNonBlockingStepExecution<Void> {
+public class WriteJSONStepExecution extends AbstractWriteStepExecution<Void> {
     private static final long serialVersionUID = 1L;
 
     private transient WriteJSONStep step;
 
     protected WriteJSONStepExecution(@Nonnull WriteJSONStep step, @Nonnull StepContext context) {
-        super(context);
+        super(step, context);
         this.step = step;
     }
 
     @Override
-    protected Void run() throws Exception {
-        FilePath ws = getContext().get(FilePath.class);
-        assert ws != null;
+    protected Void doRun() throws Exception {
         if (step.getJson() == null) {
             throw new IllegalArgumentException(Messages.WriteJSONStepExecution_missingJSON(step.getDescriptor().getFunctionName()));
         }
-        if (StringUtils.isBlank(step.getFile())) {
-            throw new IllegalArgumentException(Messages.WriteJSONStepExecution_missingFile(step.getDescriptor().getFunctionName()));
-        }
 
-        FilePath path = ws.child(step.getFile());
-        if (path.isDirectory()) {
-            throw new FileNotFoundException(Messages.JSONStepExecution_fileIsDirectory(path.getRemote()));
-        }
-
-        try (OutputStreamWriter writer = new OutputStreamWriter(path.write(), "UTF-8")) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(this.path.write(), "UTF-8")) {
             if (step.getPretty() > 0) {
                 writer.write(step.getJson().toString(step.getPretty()));
             } else {

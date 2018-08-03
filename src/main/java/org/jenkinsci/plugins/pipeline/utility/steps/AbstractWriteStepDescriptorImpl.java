@@ -24,7 +24,7 @@ public abstract class AbstractWriteStepDescriptorImpl extends StepDescriptor {
     public AbstractWriteStep newInstance(Map<String, Object> arguments) throws Exception {
         AbstractWriteStep step = (AbstractWriteStep) super.newInstance(arguments);
         if (isBlank(step.getFile()) && !step.returnString) {
-            throw new IllegalArgumentException(Messages.AbstractWriteStepDescriptorImp_missingFile(getFunctionName()));
+            throw new IllegalArgumentException(Messages.AbstractFileStepDescriptorImp_missingFile(getFunctionName()));
         }
         return step;
     }

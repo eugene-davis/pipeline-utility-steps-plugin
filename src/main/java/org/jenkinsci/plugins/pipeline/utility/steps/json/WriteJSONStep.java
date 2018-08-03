@@ -26,8 +26,9 @@ package org.jenkinsci.plugins.pipeline.utility.steps.json;
 import com.google.common.collect.ImmutableSet;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-import org.jenkinsci.plugins.workflow.steps.AbstractStepDescriptorImpl;
-import org.jenkinsci.plugins.workflow.steps.AbstractStepImpl;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractWriteStep;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractWriteStepDescriptorImpl;
+
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -47,7 +48,7 @@ import java.util.Set;
  *
  * @author Nikolas Falco
  */
-public class WriteJSONStep extends Step {
+public class WriteJSONStep extends AbstractWriteStep {
 
     private final String file;
     private final JSON json;
@@ -57,15 +58,6 @@ public class WriteJSONStep extends Step {
     public WriteJSONStep(String file, JSON json) {
         this.file = Util.fixNull(file);
         this.json = json;
-    }
-
-    /**
-     * Returns the name of the file to write.
-     *
-     * @return the file name
-     */
-    public String getFile() {
-        return file;
     }
 
     /**
@@ -103,7 +95,7 @@ public class WriteJSONStep extends Step {
     }
 
     @Extension
-    public static class DescriptorImpl extends StepDescriptor {
+    public static class DescriptorImpl extends AbstractWriteStepDescriptorImpl {
 
         public DescriptorImpl() {
 
