@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.pipeline.utility.steps;
 
 import hudson.FilePath;
+import java.io.OutputStreamWriter;
 import hudson.model.TaskListener;
 import org.jenkinsci.plugins.workflow.steps.MissingContextVariableException;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -25,9 +26,12 @@ public abstract class AbstractWriteStepExecution<T> extends AbstractFileStepExec
         this.fileStep = step;
     }
 
+    protected abstract String encode() throws Exception;
+
     @Override
-    protected final T run() throws Exception {
+    protected T doRun() throws Exception {
         FilePath ws = getContext().get(FilePath.class);
+        String encodedData;
         assert ws != null;
 
         if (isBlank(fileStep.getFile())) {
@@ -37,6 +41,12 @@ public abstract class AbstractWriteStepExecution<T> extends AbstractFileStepExec
         this.path = ws.child(fileStep.getFile());
         if (path.isDirectory()) {
             throw new FileNotFoundException(Messages.AbstractFileStepExecution_fileIsDirectory(path.getRemote()));
+        }
+
+        encodedData = this.encode();
+
+        try (OutputStreamWriter writer = new OutputStreamWriter(this.path.write(), "UTF-8")) {
+            writer.write(encodedData);
         }
 
         return super.run();

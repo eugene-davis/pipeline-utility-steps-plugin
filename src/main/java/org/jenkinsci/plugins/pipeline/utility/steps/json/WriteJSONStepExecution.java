@@ -25,7 +25,6 @@
 package org.jenkinsci.plugins.pipeline.utility.steps.json;
 
 import java.io.FileNotFoundException;
-import java.io.OutputStreamWriter;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -56,20 +55,16 @@ public class WriteJSONStepExecution extends AbstractWriteStepExecution<Void> {
         this.step = step;
     }
 
-    @Override
-    protected Void doRun() throws Exception {
+    protected String encode() throws Exception {
+        String json;
         if (step.getJson() == null) {
             throw new IllegalArgumentException(Messages.WriteJSONStepExecution_missingJSON(step.getDescriptor().getFunctionName()));
         }
-
-        try (OutputStreamWriter writer = new OutputStreamWriter(this.path.write(), "UTF-8")) {
-            if (step.getPretty() > 0) {
-                writer.write(step.getJson().toString(step.getPretty()));
-            } else {
-                step.getJson().write(writer);
-            }
+        if (step.getPretty() > 0) {
+            json = step.getJson().toString(step.getPretty());
+        } else {
+            json = step.getJson().toString();
         }
-        return null;
+        return json;
     }
-
 }
