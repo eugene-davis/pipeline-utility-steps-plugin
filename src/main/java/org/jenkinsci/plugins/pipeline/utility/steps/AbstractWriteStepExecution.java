@@ -31,7 +31,7 @@ public abstract class AbstractWriteStepExecution extends AbstractFileStepExecuti
 
     @Override
     protected String doRun() throws Exception {
-        FilePath ws = getContext().get(FilePath.class);
+        this.ws = getContext().get(FilePath.class);
         String encodedData = this.encode();
         assert ws != null;
 

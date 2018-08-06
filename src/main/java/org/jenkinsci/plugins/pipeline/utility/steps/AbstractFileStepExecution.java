@@ -25,7 +25,7 @@ public abstract class AbstractFileStepExecution<T> extends SynchronousNonBlockin
 
     @Override
     protected T run() throws Exception {
-        ws = getContext().get(FilePath.class);
+        this.ws = getContext().get(FilePath.class);
         if (ws == null && isNotBlank(fileStep.getFile())) {
             throw new MissingContextVariableException(FilePath.class);
         }
