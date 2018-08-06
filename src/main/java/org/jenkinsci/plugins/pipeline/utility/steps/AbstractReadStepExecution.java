@@ -17,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.InputStream;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public abstract class AbstractReadStepExecution<T> extends AbstractFileStepExecution<T> {
 
@@ -34,11 +33,6 @@ public abstract class AbstractReadStepExecution<T> extends AbstractFileStepExecu
 
     @Override
     protected T doRun() throws Exception {
-        String fName = fileStep.getDescriptor().getFunctionName();
-        if (isNotBlank(fileStep.getFile()) && isNotBlank(fileStep.getText())) {
-            throw new IllegalArgumentException(Messages.AbstractReadStepExecution_tooManyArguments(fName));
-        }
-
         T decodedObject = null;
         if (!isBlank(fileStep.getFile())) {
             FilePath f = this.ws.child(fileStep.getFile());

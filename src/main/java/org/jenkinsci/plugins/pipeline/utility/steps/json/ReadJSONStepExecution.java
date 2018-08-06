@@ -29,6 +29,8 @@ import net.sf.json.JSONSerializer;
 import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStepExecution;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 import javax.annotation.Nonnull;
 
 
@@ -49,5 +51,14 @@ public class ReadJSONStepExecution extends AbstractReadStepExecution<JSON> {
 
     protected JSON decode(String text) throws Exception {
         return JSONSerializer.toJSON(text);
+    }
+
+    @Override
+    protected JSON doRun() throws Exception {
+        String fName = fileStep.getDescriptor().getFunctionName();
+        if (isNotBlank(fileStep.getFile()) && isNotBlank(fileStep.getText())) {
+            throw new IllegalArgumentException(Messages.ReadJSONStepExecution_tooManyArguments(fName));
+        }
+        return super.doRun();
     }
 }
