@@ -24,7 +24,7 @@
 
 <p>
     Write a <a href="http://www.json.org/json-it.html" target="_blank">JSON</a> file in the
-    current working directory. That for example was previously read by <code>readJSON</code>.
+    current working directory and/or have the JSON returned as a string. That for example was previously read by <code>readJSON</code>.
 </p>
 <strong>Fields:</strong>
 <ul>
@@ -34,8 +34,12 @@
         object to write.
     </li>
     <li>
-        <code>file</code>:
-        Path to a file in the workspace to write to.
+        <code>file</code> <i>(optional)</i>:
+        Path to a file in the workspace to write to. Must either have a file or return encoded JSON with returnString
+    </li>
+    <li>
+        <code>returnString</code> <i>(optional)</i>:
+        Set to *true* to return JSON as string. Can be used alone or with file
     </li>
     <li>
 	<code>pretty</code> <i>(optional)</i>:
@@ -50,5 +54,9 @@ def input = readJSON file: 'myfile.json'
 writeJSON file: 'output.json', json: input
 // or pretty print it, indented with a configurable number of spaces
 writeJSON file: 'output.json', json: input, pretty: 4
+// or get text back instead of writing a file
+writeJSON returnString: true, json: input
+// or get text back AND write a file
+writeJSON file: 'output.json', returnString: true, json: input
 	</pre></code>
 </p>
