@@ -10,7 +10,7 @@ public abstract class AbstractWriteStep extends AbstractFileStep {
      *
      * @return return value flag
      */
-    public Boolean returnString() {
+    public Boolean getReturnString() {
         return returnString;
     }
 
@@ -20,7 +20,7 @@ public abstract class AbstractWriteStep extends AbstractFileStep {
      * @return return value flag
      */
     @DataBoundSetter
-    public void setText(Boolean returnString) {
+    public void setReturnString(Boolean returnString) {
         this.returnString = returnString;
     }
 }

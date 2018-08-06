@@ -125,6 +125,22 @@ public class WriteJSONStepTest {
     }
 
     @Test
+    public void writeString() throws Exception {
+        int elements = 3;
+        String input = getJSON(elements);
+
+        WorkflowJob p = j.jenkins.createProject(WorkflowJob.class, "p");
+        p.setDefinition(new CpsFlowDefinition(
+                "node {\n" +
+                        "  def json = readJSON text: '" + input + "'\n" +
+                        "  json[0] = null\n" +
+                        "  json["+ elements + "] = 45\n" +
+                        "  writeJSON returnString: true, json: json\n" +
+                        "}", true));
+        j.assertBuildStatusSuccess(p.scheduleBuild2(0));
+    }
+
+    @Test
     public void checkRequiredFile() throws Exception {
         WorkflowJob p = j.jenkins.createProject(WorkflowJob.class, "p");
         p.setDefinition(new CpsFlowDefinition(

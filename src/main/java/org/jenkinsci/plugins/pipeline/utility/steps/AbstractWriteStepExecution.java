@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public abstract class AbstractWriteStepExecution extends AbstractFileStepExecution<String> {
 
@@ -31,24 +32,28 @@ public abstract class AbstractWriteStepExecution extends AbstractFileStepExecuti
     @Override
     protected String doRun() throws Exception {
         FilePath ws = getContext().get(FilePath.class);
-        String encodedData;
+        String encodedData = this.encode();
         assert ws != null;
 
-        if (isBlank(fileStep.getFile())) {
+        if (isBlank(fileStep.getFile()) && !fileStep.getReturnString()) {
             throw new IllegalArgumentException(Messages.AbstractFileStepDescriptorImp_missingFile(this.fileStep.getDescriptor().getFunctionName()));
         }
 
-        this.path = ws.child(fileStep.getFile());
-        if (path.isDirectory()) {
-            throw new FileNotFoundException(Messages.AbstractFileStepExecution_fileIsDirectory(path.getRemote()));
+        if (isNotBlank(fileStep.getFile())) {
+            this.path = ws.child(fileStep.getFile());
+            if (path.isDirectory()) {
+                throw new FileNotFoundException(Messages.AbstractFileStepExecution_fileIsDirectory(path.getRemote()));
+            }
+    
+            try (OutputStreamWriter writer = new OutputStreamWriter(this.path.write(), "UTF-8")) {
+                writer.write(encodedData);
+            }
         }
 
-        encodedData = this.encode();
-
-        try (OutputStreamWriter writer = new OutputStreamWriter(this.path.write(), "UTF-8")) {
-            writer.write(encodedData);
+        if (fileStep.getReturnString()) {
+            return encodedData;
         }
-
+        
         return null;
     }
 
