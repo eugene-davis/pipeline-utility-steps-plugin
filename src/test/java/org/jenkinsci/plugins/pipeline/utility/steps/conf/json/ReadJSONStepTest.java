@@ -123,7 +123,7 @@ public class ReadJSONStepTest {
                         "  def json = readJSON( text: '{ \"key\": \"value\" }', file: '" + file + "' )\n" +
                         "}", true));
         WorkflowRun run = j.assertBuildStatus(Result.FAILURE, p.scheduleBuild2(0).get());
-        j.assertLogContains(Messages.ReadJSONStepExecution_tooManyArguments("readJSON"), run);
+        j.assertLogContains(org.jenkinsci.plugins.pipeline.utility.steps.Messages.AbstractReadStepExecution_tooManyArguments("readJSON"), run);
     }
 
     private String getJSON() throws IOException {

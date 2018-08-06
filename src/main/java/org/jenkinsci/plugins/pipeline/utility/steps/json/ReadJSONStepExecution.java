@@ -24,61 +24,30 @@
 
 package org.jenkinsci.plugins.pipeline.utility.steps.json;
 
-import hudson.FilePath;
 import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
-import org.apache.commons.io.IOUtils;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStep;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileStepExecution;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStepExecution;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 /**
  * Execution of {@link ReadJSONStep}.
  *
  * @author Nikolas Falco
  */
-public class ReadJSONStepExecution extends AbstractFileStepExecution<JSON> {
+public class ReadJSONStepExecution extends AbstractReadStepExecution<JSON> {
     private static final long serialVersionUID = 1L;
 
-    private transient ReadJSONStep step;
+    private transient ReadJSONStep fileStep;
 
     protected ReadJSONStepExecution(@Nonnull ReadJSONStep step, @Nonnull StepContext context) {
         super(step, context);
-        this.step = step;
+        this.fileStep = step;
     }
 
-    @Override
-    protected JSON doRun() throws Exception {
-        String fName = step.getDescriptor().getFunctionName();
-        if (isNotBlank(step.getFile()) && isNotBlank(step.getText())) {
-            throw new IllegalArgumentException(Messages.ReadJSONStepExecution_tooManyArguments(fName));
-        }
-
-        JSON json = null;
-        if (!isBlank(step.getFile())) {
-            FilePath f = ws.child(step.getFile());
-            if (f.exists() && !f.isDirectory()) {
-                try (InputStream is = f.read()) {
-                    json = JSONSerializer.toJSON(IOUtils.toString(is, "UTF-8"));
-                }
-            } else if (f.isDirectory()) {
-                throw new IllegalArgumentException(org.jenkinsci.plugins.pipeline.utility.steps.Messages.AbstractFileStepExecution_fileIsDirectory(f.getRemote()));
-            } else if (!f.exists()) {
-                throw new FileNotFoundException(Messages.JSONStepExecution_fileNotFound(f.getRemote()));
-            }
-        }
-        if (!isBlank(step.getText())) {
-            json = JSONSerializer.toJSON(step.getText().trim());
-        }
-
-        return json;
+    protected JSON decode(String text) throws Exception {
+        return JSONSerializer.toJSON(text);
     }
 }
