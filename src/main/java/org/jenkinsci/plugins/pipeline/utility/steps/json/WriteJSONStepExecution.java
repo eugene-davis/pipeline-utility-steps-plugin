@@ -45,7 +45,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  *
  * @author Nikolas Falco
  */
-public class WriteJSONStepExecution extends AbstractWriteStepExecution<Void> {
+public class WriteJSONStepExecution extends AbstractWriteStepExecution {
     private static final long serialVersionUID = 1L;
 
     private transient WriteJSONStep step;

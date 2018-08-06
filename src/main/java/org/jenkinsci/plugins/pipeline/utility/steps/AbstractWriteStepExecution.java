@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 
-public abstract class AbstractWriteStepExecution<T> extends AbstractFileStepExecution<T> {
+public abstract class AbstractWriteStepExecution extends AbstractFileStepExecution<String> {
 
     private transient AbstractWriteStep fileStep;
 
@@ -29,7 +29,7 @@ public abstract class AbstractWriteStepExecution<T> extends AbstractFileStepExec
     protected abstract String encode() throws Exception;
 
     @Override
-    protected T doRun() throws Exception {
+    protected String doRun() throws Exception {
         FilePath ws = getContext().get(FilePath.class);
         String encodedData;
         assert ws != null;
@@ -49,7 +49,7 @@ public abstract class AbstractWriteStepExecution<T> extends AbstractFileStepExec
             writer.write(encodedData);
         }
 
-        return super.run();
+        return null;
     }
 
 }
