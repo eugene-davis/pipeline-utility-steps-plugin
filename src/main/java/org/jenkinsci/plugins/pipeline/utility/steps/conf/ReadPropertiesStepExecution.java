@@ -24,18 +24,14 @@
 
 package org.jenkinsci.plugins.pipeline.utility.steps.conf;
 
-import hudson.FilePath;
-import hudson.model.TaskListener;
 import org.apache.commons.configuration2.AbstractConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ConfigurationConverter;
 import org.apache.commons.lang.StringUtils;
-import org.jenkinsci.plugins.pipeline.utility.steps.AbstractFileStepExecution;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractReadStepExecution;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 
 import javax.annotation.Nonnull;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +43,7 @@ import java.util.Set;
  *
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */
-public class ReadPropertiesStepExecution extends AbstractFileStepExecution<Map<String, Object>> {
+public class ReadPropertiesStepExecution extends AbstractReadStepExecution<Map<String, Object>> {
     private static final long serialVersionUID = 1L;
 
     private transient ReadPropertiesStep step;
@@ -57,37 +53,20 @@ public class ReadPropertiesStepExecution extends AbstractFileStepExecution<Map<S
         this.step = step;
     }
 
-    @Override
-    protected Map<String, Object> doRun() throws Exception {
-        PrintStream logger = getLogger();
+    protected Map<String, Object> decode(String text) throws Exception {
         Properties properties = new Properties();
+        StringReader sr = new StringReader(text);
+        properties.load(sr);
 
-
-        if (!StringUtils.isBlank(step.getFile())) {
-            FilePath f = ws.child(step.getFile());
-            if (f.exists() && !f.isDirectory()) {
-                try(InputStream is = f.read()){
-                   properties.load(is);
-                }
-            } else if (f.isDirectory()) {
-                logger.print("warning: ");
-                logger.print(f.getRemote());
-                logger.println(" is a directory, omitting from properties gathering");
-            } else if(!f.exists()) {
-                logger.print("warning: ");
-                logger.print(f.getRemote());
-                logger.println(" does not exist, omitting from properties gathering");
-            }
-        }
-
-        if (!StringUtils.isBlank(step.getText())) {
-            StringReader sr = new StringReader(step.getText());
+        if (StringUtils.isNotBlank(step.getText())) {
+            sr = new StringReader(step.getText());
             properties.load(sr);
+            // In the case that we did this, set text blank to avoid re-processing by parent
+            step.setText("");
         }
 
         // Check if we should interpolated values in the properties
         if ( step.isInterpolate() ) {
-            logger.println("Interpolation set to true, starting to parse the variable!");
             properties = interpolateProperties(properties);
         }
 
@@ -122,31 +101,13 @@ public class ReadPropertiesStepExecution extends AbstractFileStepExecution<Map<S
         if ( properties == null)
             return null;
         Configuration interpolatedProp;
-        PrintStream logger = getLogger();
-        try {
-            // Convert the Properties to a Configuration object in order to apply the interpolation
-            Configuration conf = ConfigurationConverter.getConfiguration(properties);
+        // Convert the Properties to a Configuration object in order to apply the interpolation
+        Configuration conf = ConfigurationConverter.getConfiguration(properties);
 
-            // Apply interpolation
-            interpolatedProp = ((AbstractConfiguration)conf).interpolatedConfiguration();
-        } catch (Exception e) {
-            logger.println("Got exception while interpolating the variables: " + e.getMessage());
-            logger.println("Returning the original properties list!");
-            return properties;
-        }
+        // Apply interpolation
+        interpolatedProp = ((AbstractConfiguration)conf).interpolatedConfiguration();
 
         // Convert back to properties
         return ConfigurationConverter.getProperties(interpolatedProp);
-    }
-
-    /**
-     * Helper method to get the logger from the context.
-     * @return the logger from the context.
-     * @throws Exception
-     */
-    private PrintStream getLogger() throws Exception {
-        TaskListener listener = getContext().get(TaskListener.class);
-        assert listener != null;
-        return listener.getLogger();
     }
 }

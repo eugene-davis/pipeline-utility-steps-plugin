@@ -303,6 +303,7 @@ public class ReadPropertiesStepTest {
                         "  assert props['fileUrl'] == '${url}'\n" +
                         "  assert props.fileUrl == '${url}'\n" +
                         "}", true));
-        j.assertBuildStatusSuccess(p.scheduleBuild2(0));
+        WorkflowRun run = j.assertBuildStatus(Result.FAILURE, p.scheduleBuild2(0).get());
+        j.assertLogContains("Infinite loop in property interpolation of ${url}: url->file->fileUrl", run);
     }
 }
