@@ -63,15 +63,18 @@ public class WriteJSONStepTest {
 
     @Test
     public void writeFilePretty() throws Exception {
-        File output = temp.newFile();
+        File outputFolder = temp.newFolder();
+        String testPath = FilenameTestsUtils.separatorsToSystemEscaped((FilenameTestsUtils.toPath(outputFolder) + "/writeFile.json"));
 
         WorkflowJob p = j.jenkins.createProject(WorkflowJob.class, "p");
         p.setDefinition(new CpsFlowDefinition(
                 "node {\n" +
                         " def json = readJSON text: '{\"a\": {\"1\": true,\"2\": 2}}' \n" +
-                        " writeJSON file: '" + FilenameTestsUtils.toPath(output) + "', json: json, pretty: 4\n" +
+                        " writeJSON file: '" + testPath + "', json: json, pretty: 4\n" +
                         "}", true));
         j.assertBuildStatusSuccess(p.scheduleBuild2(0));
+
+        File output = new File(testPath);
 
         String lines = new String(Files.readAllBytes(Paths.get(output.toURI())), StandardCharsets.UTF_8);
         assertThat(lines.split("\r\n|\r|\n").length, equalTo(4));
@@ -80,15 +83,18 @@ public class WriteJSONStepTest {
 
     @Test
     public void writeFilePrettyEmpty() throws Exception {
-        File output = temp.newFile();
+        File outputFolder = temp.newFolder();
+        String testPath = FilenameTestsUtils.separatorsToSystemEscaped((FilenameTestsUtils.toPath(outputFolder) + "/writeFile.json"));
 
         WorkflowJob p = j.jenkins.createProject(WorkflowJob.class, "p");
         p.setDefinition(new CpsFlowDefinition(
                 "node {\n" +
                         " def json = readJSON text: '{}' \n" +
-                        " writeJSON file: '" + FilenameTestsUtils.toPath(output) + "', json: json, pretty: 4\n" +
+                        " writeJSON file: '" + testPath + "', json: json, pretty: 4\n" +
                         "}", true));
         j.assertBuildStatusSuccess(p.scheduleBuild2(0));
+
+        File output = new File(testPath);
 
         String lines = new String(Files.readAllBytes(Paths.get(output.toURI())), StandardCharsets.UTF_8);
         assertThat(lines.split("\r\n|\r|\n").length, equalTo(1));
@@ -98,7 +104,8 @@ public class WriteJSONStepTest {
     public void writeFile() throws Exception {
         int elements = 3;
         String input = getJSON(elements);
-        File output = temp.newFile();
+        File outputFolder = temp.newFolder();
+        String testPath = FilenameTestsUtils.separatorsToSystemEscaped((FilenameTestsUtils.toPath(outputFolder) + "/writeFile.json"));
 
         WorkflowJob p = j.jenkins.createProject(WorkflowJob.class, "p");
         p.setDefinition(new CpsFlowDefinition(
@@ -106,9 +113,11 @@ public class WriteJSONStepTest {
                         "  def json = readJSON text: '" + input + "'\n" +
                         "  json[0] = null\n" +
                         "  json["+ elements + "] = 45\n" +
-                        "  writeJSON file: '" + FilenameTestsUtils.toPath(output) + "', json: json\n" +
+                        "  writeJSON file: '" + testPath + "', json: json\n" +
                         "}", true));
         j.assertBuildStatusSuccess(p.scheduleBuild2(0));
+
+        File output = new File(testPath);
 
         // file exists by default so we check that should not be empty
         assertThat(output.length(), greaterThan(0l));

@@ -8,6 +8,7 @@ import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 
 import java.io.FileNotFoundException;
+import java.nio.file.FileAlreadyExistsException;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -43,6 +44,10 @@ public abstract class AbstractWriteStepExecution extends AbstractFileStepExecuti
             this.path = ws.child(fileStep.getFile());
             if (path.isDirectory()) {
                 throw new FileNotFoundException(Messages.AbstractFileStepExecution_fileIsDirectory(path.getRemote()));
+            }
+
+            if (path.exists()) {
+                throw new FileAlreadyExistsException(Messages.AbstractWriteStepExecution_fileAlreadyExists(path.getRemote()));
             }
     
             try (OutputStreamWriter writer = new OutputStreamWriter(this.path.write(), "UTF-8")) {
