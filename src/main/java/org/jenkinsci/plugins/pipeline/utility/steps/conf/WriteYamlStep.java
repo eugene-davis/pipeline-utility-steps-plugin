@@ -29,6 +29,9 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractWriteStepDescriptorImpl;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractWriteStepExecution;
+import org.jenkinsci.plugins.pipeline.utility.steps.AbstractWriteStep;
 import org.jenkinsci.plugins.pipeline.utility.steps.shaded.org.yaml.snakeyaml.DumperOptions;
 import org.jenkinsci.plugins.pipeline.utility.steps.shaded.org.yaml.snakeyaml.Yaml;
 import org.jenkinsci.plugins.workflow.steps.*;
@@ -49,7 +52,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
  *
  * @author Javier DELGADO &lt;witokondoria@gmail.com&gt;.
  */
-public class WriteYamlStep extends Step {
+public class WriteYamlStep extends AbstractWriteStep {
 
     private String file;
     private Object data;
@@ -129,12 +132,11 @@ public class WriteYamlStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new Execution(context, this);
+        return new Execution(this, context);
     }
 
     @Extension
-    public static class DescriptorImpl extends StepDescriptor {
-
+    public static class DescriptorImpl extends AbstractWriteStepDescriptorImpl {
         public DescriptorImpl() {
 
         }
@@ -156,28 +158,17 @@ public class WriteYamlStep extends Step {
         }
     }
 
-    public static class Execution extends SynchronousNonBlockingStepExecution<Void> {
+    public static class Execution extends AbstractWriteStepExecution {
         private static final long serialVersionUID = 1L;
 
         private transient WriteYamlStep step;
 
-        protected Execution(@Nonnull StepContext context, WriteYamlStep step) {
-            super(context);
+        protected Execution(@Nonnull WriteYamlStep step, @Nonnull StepContext context) {
+            super(step, context);
             this.step = step;
         }
 
-        @Override
-        protected Void run () throws Exception {
-            FilePath ws = getContext().get(FilePath.class);
-            assert ws != null;
-            FilePath path = ws.child(step.getFile());
-            if (path.exists()) {
-                throw new FileAlreadyExistsException(path.getRemote() + " already exist.");
-            }
-            if (path.isDirectory()) {
-                throw new FileNotFoundException(path.getRemote() + " is a directory.");
-            }
-
+        protected String encode() throws Exception {
             DumperOptions options = new DumperOptions();
             options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
             Yaml yaml = new Yaml(options);
@@ -189,12 +180,7 @@ public class WriteYamlStep extends Step {
             } else {
                 cs = Charset.forName(step.getCharset()); //Will throw stuff directly to the user
             }
-
-            try (OutputStreamWriter writer = new OutputStreamWriter(path.write(), cs)) {
-                yaml.dump (step.getData(), writer);
-            }
-
-            return null;
+            return yaml.dump(step.getData());
         }
     }
 }
